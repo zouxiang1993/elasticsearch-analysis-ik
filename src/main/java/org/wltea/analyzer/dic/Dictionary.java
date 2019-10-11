@@ -478,6 +478,10 @@ public class Dictionary {
                     if (errorCode != 0) {
                         logger.error("getRemoteWords errer, location:{}, response:{}", location, entityString);
                     }
+                    if (responseJson.getJSONObject("result") == null){
+                        logger.error("getRemoteWords errer, location:{}, response:{}", location, entityString);
+                        return null;
+                    }
                     content = responseJson.getJSONObject("result").getString("content");
                 }
             } else {

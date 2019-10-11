@@ -39,6 +39,7 @@
             <useTransitiveFiltering>true</useTransitiveFiltering>
             <includes>
                 <include>org.apache.httpcomponents:httpclient</include>
+                <include>com.alibaba:fastjson</include>
             </includes>
         </dependencySet>
     </dependencySets>
