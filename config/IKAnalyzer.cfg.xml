@@ -9,5 +9,6 @@
 	<!--用户可以在这里配置远程扩展字典 -->
 	<!-- <entry key="remote_ext_dict">words_location</entry> -->
 	<!--用户可以在这里配置远程扩展停止词字典-->
-	<!-- <entry key="remote_ext_stopwords">words_location</entry> -->
+	<!--<entry key="remote_ext_stopwords">http://localhost:8888/seoEsConfig/get?type=2&amp;domain=mall&amp;appOwnerCode=1000</entry>-->
+	<entry key="remote_ext_stopwords">http://10.1.34.153:8080/seoEsConfig/get?type=2&amp;domain=mall&amp;appOwnerCode=1000</entry>
 </properties>

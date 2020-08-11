@@ -489,6 +489,9 @@ public class Dictionary {
                         location, response.getStatusLine().getStatusCode());
             }
             response.close();
+            if (content == null) {
+                return Collections.emptyList();
+            }
             return Arrays.asList(content.split("\n"));
         } catch (IllegalStateException | IOException e) {
             logger.error("getRemoteWords {} error", e, location);

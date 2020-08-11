@@ -1,0 +1,2 @@
+执行 mvn clean package 命令之后，target/releases/elasticsearch-analysis-ik-7.2.1.zip 就是插件包。
+

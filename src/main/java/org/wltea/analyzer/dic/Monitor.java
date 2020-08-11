@@ -1,5 +1,6 @@
 package org.wltea.analyzer.dic;
 
+import org.apache.http.Header;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpHead;
@@ -80,13 +81,15 @@ public class Monitor implements Runnable {
             //返回200 才做操作
             if (response.getStatusLine().getStatusCode() == 200) {
 
-                if (((response.getLastHeader("Last-Modified") != null) && !response.getLastHeader("Last-Modified").getValue().equalsIgnoreCase(last_modified))
-                        || ((response.getLastHeader("ETag") != null) && !response.getLastHeader("ETag").getValue().equalsIgnoreCase(eTags))) {
-
-                    // 远程词库有更新,需要重新加载词典，并修改last_modified,eTags
-                    Dictionary.getSingleton().reLoadMainDict();
-                    last_modified = response.getLastHeader("Last-Modified") == null ? null : response.getLastHeader("Last-Modified").getValue();
-                    eTags = response.getLastHeader("ETag") == null ? null : response.getLastHeader("ETag").getValue();
+                Header lastModifiedHeader = response.getLastHeader("Last-Modified");
+                if (lastModifiedHeader != null) {
+                    String lastModifiedHeaderValue = lastModifiedHeader.getValue();
+                    if (lastModifiedHeaderValue != null && !lastModifiedHeaderValue.equalsIgnoreCase(last_modified)) {
+                        // 远程词库有更新,需要重新加载词典，并修改last_modified,eTags
+                        Dictionary.getSingleton().reLoadMainDict();
+                        last_modified = response.getLastHeader("Last-Modified") == null ? null : response.getLastHeader("Last-Modified").getValue();
+                        eTags = response.getLastHeader("ETag") == null ? null : response.getLastHeader("ETag").getValue();
+                    }
                 }
             } else if (response.getStatusLine().getStatusCode() == 304) {
                 logger.info("词典无修改: " + this.location);

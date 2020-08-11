@@ -10,10 +10,18 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.wltea.analyzer.dic.Dictionary;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -36,6 +44,26 @@ public class AnalysisIkPluginTest {
                 .numOfNode(1) // Create a test node, default number of node is 3.
                 .pluginTypes("org.elasticsearch.plugin.analysis.ik.AnalysisIkPlugin")
         );
+
+        try{
+            Field basePathField = ElasticsearchClusterRunner.class.getDeclaredField("basePath");
+            basePathField.setAccessible(true);
+            String basePath = (String) basePathField.get(runner);
+            System.out.println("配置路径为: " + basePath);
+            Path targetPath = Paths.get(basePath).resolve("node_1").resolve("config").resolve("analysis-ik");
+            File targetDir = new File(targetPath.toUri());
+            targetDir.mkdirs();
+
+            String dir=System.getProperty("user.dir");
+            File configDir = new File(Paths.get(dir).resolve("config").toUri());
+            for (File file : configDir.listFiles()) {
+                Files.copy(Paths.get(file.toURI()),
+                        targetPath.resolve(file.getName()), StandardCopyOption.REPLACE_EXISTING);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @After
@@ -51,6 +79,8 @@ public class AnalysisIkPluginTest {
     public void test1() throws Exception {
         createIndex("test");
         analyzer("test");
+
+        Thread.sleep(1000000000); // 测试动态获取远程词典的功能。
     }
 
     private synchronized void analyzer(String indexName) {
